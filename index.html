@@ -53,7 +53,7 @@
         <button class="text-button" id="decorateButton">去布置 <span>↗</span></button>
       </section>
 
-      <section class="room-card card-shadow home-only" id="roomCard">
+      <section class="room-card card-shadow home-only" id="roomCard" tabindex="0" aria-label="进入共同小屋布置">
         <div class="room-label"><span class="status-dot"></span> 客厅 · 晴</div>
         <div class="room-art">
           <div class="wall-shelf"><span>♡</span><span>✦</span><span>⌂</span></div>
@@ -71,7 +71,7 @@
             <strong>小团子</strong>
             <span>你们的共同宠物 · <b id="petOutfitLabel">原本的软乎乎</b></span>
           </div>
-          <button class="round-button" id="feedButton" aria-label="喂小团子">♡</button>
+          <div class="room-footer-actions"><button class="soft-button" id="enterHouseButton">进入小屋</button><button class="round-button" id="feedButton" aria-label="喂小团子">♡</button></div>
         </div>
       </section>
 
@@ -104,7 +104,8 @@
           <button class="primary-button" id="openGamesButton">去玩小游戏 <span>↗</span></button>
         </div>
         <div class="pet-chat" id="petChat" hidden>
-          <div class="pet-chat-bubble" id="petChatText">我会陪你们把每一个小任务都变成回忆。</div>
+          <div class="pet-chat-log" id="petChatLog"></div>
+          <div class="pet-chat-compose"><input id="petChatInput" maxlength="80" placeholder="和小团子说点什么…" /><button id="sendPetChat">发送</button></div>
           <div class="pet-chat-choices">
             <button data-pet-chat="今天谁更想 TA？">今天谁更想 TA？</button>
             <button data-pet-chat="给我们一句鼓励">给我们一句鼓励</button>
@@ -200,6 +201,9 @@
           <button class="theme-option theme-option-blue" data-theme="blue"><span class="theme-preview"><i></i><b></b><em></em></span><strong>海边夏天</strong><small>清爽 · 浪漫</small></button>
           <button class="theme-option theme-option-green" data-theme="green"><span class="theme-preview"><i></i><b></b><em></em></span><strong>森林晚安</strong><small>安静 · 陪伴</small></button>
         </div>
+        <p class="section-kicker furniture-kicker">FURNITURE COLLECTION</p>
+        <p class="modal-description">完成情侣任务，就能把家具带回你们的小屋。</p>
+        <div class="furniture-list" id="furnitureList"></div>
         <button class="save-decorate" id="saveDecorate">保存这个布置</button>
       </section>
     </div>
@@ -218,6 +222,6 @@
         <p class="bind-note">云端版本支持跨设备同步，把邀请码发给 TA 即可加入。</p>
       </section>
     </div>
-    <script src="./app.js"></script>
+    <script src="./app.js?v=20261025-pet"></script>
   </body>
 </html>

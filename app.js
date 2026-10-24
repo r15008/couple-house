@@ -8,7 +8,8 @@ const defaultState = {
   tasks: [true, false, false],
   records: [{ id: 1, date: '今天 · 10:24', text: '一起把小屋的窗帘换成了喜欢的颜色。', author: '你们', tone: 'pink' }],
   wishes: [{ id: 1, text: '一起去看海', done: false }, { id: 2, text: '养一只真正的小猫', done: false }],
-  pet: { name: '小团子', level: 1, xp: 30, coins: 18, mood: '好奇', outfit: 'default', unlocked: ['default'], lastChat: '我会陪你们把每一个小任务都变成回忆。' },
+  pet: { name: '小团子', level: 1, xp: 30, coins: 18, mood: '好奇', outfit: 'default', unlocked: ['default', 'flower', 'blueband', 'tinybow', 'sunglasses', 'strawhat', 'scarf'], lastChat: '我会陪你们把每一个小任务都变成回忆。', chat: [] },
+  house: { sofa: 'sofa-pink', wall: 'wall-cream', decor: 'decor-plant', unlocked: ['sofa-pink', 'wall-cream', 'decor-plant'] },
   games: {
     wins: 0,
     drawing: { status: 'idle', answer: '', image: '', guess: '', result: '', drawer: '', round: 0 },
@@ -24,6 +25,9 @@ function normalizeState(value = {}) {
   merged.wishes = Array.isArray(value.wishes) ? value.wishes : clone(defaultState.wishes);
   merged.pet = { ...clone(defaultState.pet), ...(value.pet || {}) };
   merged.pet.unlocked = Array.isArray(value.pet?.unlocked) ? value.pet.unlocked : ['default'];
+  merged.pet.chat = Array.isArray(value.pet?.chat) ? value.pet.chat : [];
+  merged.house = { ...clone(defaultState.house), ...(value.house || {}) };
+  merged.house.unlocked = Array.isArray(value.house?.unlocked) ? value.house.unlocked : clone(defaultState.house.unlocked);
   merged.games = { ...clone(defaultState.games), ...(value.games || {}) };
   merged.games.drawing = { ...clone(defaultState.games.drawing), ...(value.games?.drawing || {}) };
   merged.games.question = { ...clone(defaultState.games.question), ...(value.games?.question || {}) };
@@ -67,6 +71,7 @@ function render() {
   renderWishes();
   renderCouple();
   renderPet();
+  renderHouse();
   renderGames();
   document.querySelector('#inviteCode').textContent = state.inviteCode || 'LUV-6281';
   const boundText = state.bound ? `已和 ${state.partnerName || 'TA'} 连接` : '还没有绑定另一半';
@@ -75,9 +80,23 @@ function render() {
 
 const outfits = [
   { id: 'default', name: '原本的软乎乎', icon: '♡', cost: 0 },
-  { id: 'rainbow', name: '彩虹围巾', icon: '🌈', cost: 25 },
-  { id: 'date', name: '约会小西装', icon: '🎀', cost: 60 },
-  { id: 'pajamas', name: '晚安睡衣', icon: '🌙', cost: 110 }
+  { id: 'flower', name: '小花发卡', icon: '🌼', cost: 0 }, { id: 'blueband', name: '蓝色发带', icon: '🎗️', cost: 0 }, { id: 'tinybow', name: '小小蝴蝶结', icon: '🎀', cost: 0 },
+  { id: 'sunglasses', name: '太阳眼镜', icon: '😎', cost: 0 }, { id: 'strawhat', name: '草莓帽', icon: '🍓', cost: 0 }, { id: 'scarf', name: '软绵围巾', icon: '🧣', cost: 0 },
+  { id: 'rainbow', name: '彩虹围巾', icon: '🌈', cost: 25 }, { id: 'date', name: '约会小西装', icon: '🎀', cost: 40 }, { id: 'pajamas', name: '晚安睡衣', icon: '🌙', cost: 60 },
+  { id: 'crown', name: '小皇冠', icon: '👑', cost: 75 }, { id: 'party', name: '派对帽', icon: '🥳', cost: 90 }, { id: 'chef', name: '厨师帽', icon: '👨‍🍳', cost: 105 },
+  { id: 'flowercrown', name: '花环', icon: '💐', cost: 120 }, { id: 'angel', name: '天使翅膀', icon: '👼', cost: 135 }, { id: 'devil', name: '小恶魔角', icon: '😈', cost: 150 },
+  { id: 'raincoat', name: '黄色雨衣', icon: '🧥', cost: 165 }, { id: 'hoodie', name: '奶油卫衣', icon: '🧸', cost: 180 }, { id: 'sailor', name: '水手服', icon: '⚓', cost: 195 },
+  { id: 'hanfu', name: '汉服小裙', icon: '🏮', cost: 210 }, { id: 'kimono', name: '樱花和服', icon: '🌸', cost: 225 }, { id: 'wizard', name: '魔法斗篷', icon: '🪄', cost: 240 },
+  { id: 'astronaut', name: '宇航服', icon: '🚀', cost: 260 }, { id: 'detective', name: '侦探帽', icon: '🕵️', cost: 280 }, { id: 'cowboy', name: '牛仔帽', icon: '🤠', cost: 300 },
+  { id: 'bunny', name: '兔兔耳朵', icon: '🐰', cost: 320 }, { id: 'cat', name: '猫咪耳朵', icon: '🐱', cost: 340 }, { id: 'bear', name: '小熊连帽', icon: '🐻', cost: 360 },
+  { id: 'fox', name: '狐狸尾巴', icon: '🦊', cost: 380 }, { id: 'panda', name: '熊猫套装', icon: '🐼', cost: 400 }, { id: 'penguin', name: '企鹅外套', icon: '🐧', cost: 420 },
+  { id: 'bee', name: '蜜蜂翅膀', icon: '🐝', cost: 440 }, { id: 'butterfly', name: '蝴蝶翅膀', icon: '🦋', cost: 460 }, { id: 'unicorn', name: '独角兽角', icon: '🦄', cost: 480 },
+  { id: 'mermaid', name: '美人鱼尾', icon: '🧜', cost: 500 }, { id: 'dino', name: '恐龙睡衣', icon: '🦕', cost: 520 }, { id: 'chicken', name: '小鸡帽', icon: '🐥', cost: 540 },
+  { id: 'frog', name: '青蛙雨帽', icon: '🐸', cost: 560 }, { id: 'ladybug', name: '瓢虫背包', icon: '🐞', cost: 580 }, { id: 'rocket', name: '星际背包', icon: '🛰️', cost: 600 },
+  { id: 'moon', name: '月亮发光帽', icon: '🌙', cost: 620 }, { id: 'star', name: '星星斗篷', icon: '⭐', cost: 640 }, { id: 'cloud', name: '云朵围脖', icon: '☁️', cost: 660 },
+  { id: 'sun', name: '小太阳徽章', icon: '☀️', cost: 680 }, { id: 'heart', name: '爱心胸针', icon: '💗', cost: 700 }, { id: 'music', name: '音乐耳机', icon: '🎧', cost: 720 },
+  { id: 'camera', name: '旅行相机', icon: '📷', cost: 740 }, { id: 'coffee', name: '咖啡围裙', icon: '☕', cost: 760 }, { id: 'icecream', name: '冰淇淋发夹', icon: '🍦', cost: 780 },
+  { id: 'gift', name: '礼物蝴蝶结', icon: '🎁', cost: 800 }, { id: 'firework', name: '烟花头饰', icon: '🎆', cost: 820 }, { id: 'festival', name: '节日灯笼', icon: '🏮', cost: 840 }
 ];
 const drawingWords = ['奶茶', '小猫', '看电影', '拥抱', '旅行', '烟花', '冰淇淋', '一起做饭'];
 const chatReplies = {
@@ -85,6 +104,19 @@ const chatReplies = {
   '给我们一句鼓励': ['把今天过好，就是你们正在写的情书。', '慢慢来，喜欢的人值得每一个认真对待的日子。'],
   '夸夸我的新衣服': ['这套衣服和你一样可爱，适合出门收集拥抱。', '今天的小团子闪闪发光，TA 一定会喜欢。']
 };
+const furniture = [
+  { id: 'sofa-pink', type: 'sofa', name: '奶油沙发', icon: '🛋️', cost: 0 }, { id: 'sofa-blue', type: 'sofa', name: '海盐沙发', icon: '🛋️', cost: 35 }, { id: 'sofa-green', type: 'sofa', name: '森林沙发', icon: '🛋️', cost: 65 }, { id: 'sofa-purple', type: 'sofa', name: '晚霞沙发', icon: '🛋️', cost: 100 },
+  { id: 'wall-cream', type: 'wall', name: '奶油墙面', icon: '▦', cost: 0 }, { id: 'wall-blue', type: 'wall', name: '海风墙面', icon: '▦', cost: 45 }, { id: 'wall-green', type: 'wall', name: '森林墙面', icon: '▦', cost: 80 }, { id: 'wall-night', type: 'wall', name: '星空墙面', icon: '▦', cost: 130 },
+  { id: 'decor-plant', type: 'decor', name: '窗边绿植', icon: '🌿', cost: 0 }, { id: 'decor-books', type: 'decor', name: '情侣书架', icon: '📚', cost: 30 }, { id: 'decor-piano', type: 'decor', name: '迷你钢琴', icon: '🎹', cost: 90 }, { id: 'decor-projector', type: 'decor', name: '电影投影', icon: '📽️', cost: 150 }
+];
+const petAiReplies = [
+  { keys: ['你好', '嗨', '在吗'], reply: '我在呀！今天也会安安静静陪着你们。' },
+  { keys: ['心情', '难过', '不开心', '烦'], reply: '先来抱一下。你可以把烦恼告诉我，我会记得陪你慢慢变好。' },
+  { keys: ['任务', '打卡', '奖励'], reply: '完成共同任务就能拿到经验、爱心币和新家具，我们一起把小屋变漂亮！' },
+  { keys: ['衣服', '穿', '配饰'], reply: '打开换装就能看到衣柜，免费的配饰随时可以换，稀有款等你们一起解锁。' },
+  { keys: ['爱', '喜欢', '想念'], reply: '我感受到啦。你们认真生活的每一天，都是小屋里最漂亮的装饰。' },
+  { keys: ['小屋', '家具', '沙发', '墙'], reply: '点进共同小屋就可以布置家具，沙发、墙面和装饰都能和 TA 一起收集。' }
+];
 
 function applyPetReward(xp, coins) {
   const pet = state.pet;
@@ -95,12 +127,13 @@ function applyPetReward(xp, coins) {
     pet.unlocked.push(outfit.id);
     return outfit.name;
   });
-  return newlyUnlocked;
+  return newlyUnlocked.concat(applyFurnitureReward());
 }
 
 function renderPet() {
   const pet = state.pet;
   const outfit = outfits.find(item => item.id === pet.outfit) || outfits[0];
+  outfits.filter(item => item.cost === 0).forEach(item => { if (!pet.unlocked.includes(item.id)) pet.unlocked.push(item.id); });
   const progress = Math.min(100, Math.round((pet.xp % 40) / 40 * 100));
   document.querySelector('#petLevel').textContent = `Lv.${pet.level}`;
   document.querySelector('#petCoins').textContent = `♡ ${pet.coins}`;
@@ -108,7 +141,9 @@ function renderPet() {
   document.querySelector('#petBubble').textContent = pet.lastChat || '今天也要一起玩！';
   document.querySelector('#petOutfit').textContent = outfit.icon;
   document.querySelector('#petOutfitLabel').textContent = outfit.name;
-  document.querySelector('#petChatText').textContent = pet.lastChat || '我会陪你们把每一个小任务都变成回忆。';
+  const chatLog = document.querySelector('#petChatLog');
+  const chat = pet.chat.length ? pet.chat : [{ role: 'pet', text: pet.lastChat || '我会陪你们把每一个小任务都变成回忆。' }];
+  chatLog.innerHTML = chat.slice(-8).map(item => `<div class="chat-line ${item.role === 'you' ? 'from-you' : 'from-pet'}"><span>${item.role === 'you' ? '你' : '小团子'}</span><p>${item.text}</p></div>`).join('');
   const outfitList = document.querySelector('#outfitList');
   outfitList.innerHTML = outfits.map(item => {
     const unlocked = pet.unlocked.includes(item.id);
@@ -119,6 +154,41 @@ function renderPet() {
     outfitList.hidden = false;
     saveState(`小团子换上了${outfits.find(item => item.id === state.pet.outfit).name} ✨`);
   }));
+}
+
+function renderHouse() {
+  const room = document.querySelector('#roomCard');
+  room.dataset.sofa = state.house.sofa;
+  room.dataset.wall = state.house.wall;
+  room.dataset.decor = state.house.decor;
+  const list = document.querySelector('#furnitureList');
+  list.innerHTML = furniture.map(item => {
+    const unlocked = state.house.unlocked.includes(item.id);
+    const selected = state.house[item.type] === item.id;
+    return `<button class="furniture-option ${selected ? 'active' : ''} ${unlocked ? '' : 'locked'}" data-furniture="${item.id}" data-furniture-type="${item.type}" ${unlocked ? '' : 'disabled'}><span>${item.icon}</span><small>${unlocked ? item.name : `任务解锁 · ${item.cost}♡`}</small></button>`;
+  }).join('');
+  list.querySelectorAll('.furniture-option:not(:disabled)').forEach(button => button.addEventListener('click', () => {
+    state.house[button.dataset.furnitureType] = button.dataset.furniture;
+    renderHouse();
+  }));
+}
+
+function applyFurnitureReward() {
+  const newlyUnlocked = furniture.filter(item => state.pet.coins >= item.cost && !state.house.unlocked.includes(item.id)).map(item => {
+    state.house.unlocked.push(item.id);
+    return item.name;
+  });
+  return newlyUnlocked;
+}
+
+function answerPet(message) {
+  const normalized = message.trim();
+  if (!normalized) return;
+  const match = petAiReplies.find(item => item.keys.some(key => normalized.includes(key)));
+  const response = match?.reply || `我听见你说“${normalized}”啦。要不要和 TA 一起完成一个小任务，再回来告诉我结果？`;
+  state.pet.chat.push({ role: 'you', text: normalized }, { role: 'pet', text: response });
+  state.pet.lastChat = response;
+  saveState('小团子回复你啦');
 }
 
 function renderGames() {
@@ -141,6 +211,7 @@ function renderGames() {
 function showPetChat(promptText) {
   const replies = chatReplies[promptText] || ['我会一直陪着你们。'];
   state.pet.lastChat = replies[Math.floor(Math.random() * replies.length)];
+  state.pet.chat.push({ role: 'you', text: promptText }, { role: 'pet', text: state.pet.lastChat });
   document.querySelector('#petChat').hidden = false;
   saveState('小团子回复你啦');
 }
@@ -175,7 +246,10 @@ function closeModal(modal) { modal.classList.remove('open'); modal.setAttribute(
 function openBind() { bindModal.classList.add('open'); bindModal.setAttribute('aria-hidden', 'false'); render(); }
 function closeAllModals() { closeModal(decorateModal); closeModal(bindModal); }
 
-document.querySelector('#decorateButton').addEventListener('click', () => { decorateModal.classList.add('open'); decorateModal.setAttribute('aria-hidden', 'false'); document.querySelectorAll('.theme-option').forEach(option => option.classList.toggle('active', option.dataset.theme === state.theme)); });
+function openDecorate() { decorateModal.classList.add('open'); decorateModal.setAttribute('aria-hidden', 'false'); document.querySelectorAll('.theme-option').forEach(option => option.classList.toggle('active', option.dataset.theme === state.theme)); renderHouse(); }
+document.querySelector('#decorateButton').addEventListener('click', openDecorate);
+document.querySelector('#enterHouseButton').addEventListener('click', openDecorate);
+document.querySelector('#roomCard').addEventListener('click', event => { if (!event.target.closest('button')) openDecorate(); });
 document.querySelector('#closeDecorate').addEventListener('click', () => closeModal(decorateModal));
 document.querySelector('#closeBind').addEventListener('click', () => closeModal(bindModal));
 document.querySelector('.avatar-button').addEventListener('click', openBind);
@@ -204,6 +278,8 @@ document.querySelectorAll('[data-task="true"]').forEach((task, index) => task.ad
 document.querySelector('#petChatButton').addEventListener('click', () => { document.querySelector('#petChat').hidden = !document.querySelector('#petChat').hidden; document.querySelector('#outfitList').hidden = true; });
 document.querySelector('#outfitButton').addEventListener('click', () => { document.querySelector('#outfitList').hidden = !document.querySelector('#outfitList').hidden; document.querySelector('#petChat').hidden = true; });
 document.querySelectorAll('[data-pet-chat]').forEach(button => button.addEventListener('click', () => showPetChat(button.dataset.petChat)));
+document.querySelector('#sendPetChat').addEventListener('click', () => { const input = document.querySelector('#petChatInput'); answerPet(input.value); input.value = ''; input.focus(); });
+document.querySelector('#petChatInput').addEventListener('keydown', event => { if (event.key === 'Enter') document.querySelector('#sendPetChat').click(); });
 document.querySelector('#openGamesButton').addEventListener('click', () => switchPage('games'));
 
 document.querySelectorAll('.nav-item').forEach(item => item.addEventListener('click', () => switchPage(item.dataset.pageTarget)));
