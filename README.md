@@ -34,3 +34,7 @@ node server.js
 4. `render.yaml` 已配置持久化磁盘，房间数据不会因服务重启丢失。
 
 手机打开公网地址后，可以通过浏览器的“添加到主屏幕”安装成类似 App 的 PWA。
+
+## 无银行卡方案：Cloudflare Workers
+
+项目同时提供 `worker.js` 和 `wrangler.jsonc`。Cloudflare Workers Free 支持 SQLite-backed Durable Objects，可把房间状态和实时事件放到云端；部署时不再依赖 Render 的银行卡验证。需要在 Cloudflare 创建账号后，把 GitHub 仓库连接到 Workers，或使用 Wrangler 部署。

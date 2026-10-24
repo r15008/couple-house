@@ -2,7 +2,7 @@
   "name": "小日子 · 情侣共同小屋",
   "short_name": "小日子",
   "description": "两个人一起经营的小屋、时光和心愿。",
-  "start_url": "/couple-house/",
+  "start_url": "./",
   "display": "standalone",
   "background_color": "#fffaf6",
   "theme_color": "#f28c91",

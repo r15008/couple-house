@@ -145,4 +145,4 @@ async function startRemoteSync() {
   events.onmessage = event => { try { const incoming = JSON.parse(event.data); if (incoming.source === CLIENT_ID || !incoming.state) return; state = { ...state, ...incoming.state }; localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); render(); showToast('另一台设备刚刚更新了你们的小屋'); } catch { /* ignore malformed events */ } };
 }
 if (ONLINE_SYNC) startRemoteSync().catch(() => showToast('云端暂时不可用，本地模式仍可继续使用'));
-if (ONLINE_SYNC && 'serviceWorker' in navigator) navigator.serviceWorker.register('/couple-house/sw.js').catch(() => {});
+if (ONLINE_SYNC && 'serviceWorker' in navigator) navigator.serviceWorker.register(new URL('./sw.js', location.href)).catch(() => {});
