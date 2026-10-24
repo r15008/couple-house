@@ -1,0 +1,12 @@
+.git/
+data/
+node_modules/
+*.log
+.dockerignore
+.gitignore
+Dockerfile
+README.md
+render.yaml
+server.js
+worker.js
+wrangler.jsonc
