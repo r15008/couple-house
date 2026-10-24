@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: couple-house
+    env: docker
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    healthCheckPath: /api/health
+    disk:
+      name: couple-house-data
+      mountPath: /var/lib/couple-house
+      sizeGB: 1

@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#fff9f3" />
+    <link rel="manifest" href="./manifest.webmanifest" />
+    <title>小日子 · 情侣共同小屋</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="app-shell" id="appShell">
+      <div class="ambient ambient-one"></div>
+      <div class="ambient ambient-two"></div>
+
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">OUR LITTLE HOME <span>·</span> DAY 128</p>
+          <h1>小日子 <span class="heart">♥</span></h1>
+        </div>
+        <button class="avatar-button" aria-label="打开个人资料">
+          <span class="avatar avatar-you">你</span>
+          <span class="avatar avatar-partner">TA</span>
+          <span class="online-dot"></span>
+        </button>
+      </header>
+
+      <section class="hero-card card-shadow home-only">
+        <div class="hero-copy">
+          <div class="weather-line"><span class="sun">☀</span> 今天是适合窝在一起的天气</div>
+          <h2>欢迎回家，<br /><span>小笨蛋们。</span></h2>
+          <p>你们的小屋正在等你们回来<br />一起把日子过成喜欢的样子。</p>
+        </div>
+        <div class="window-scene" aria-label="窗外的晴天">
+          <div class="cloud cloud-a"></div>
+          <div class="cloud cloud-b"></div>
+          <div class="hill hill-back"></div>
+          <div class="hill hill-front"></div>
+          <div class="window-sun"></div>
+          <span class="bird bird-a">⌁</span>
+          <span class="bird bird-b">⌁</span>
+        </div>
+      </section>
+
+      <section class="section-heading home-only">
+        <div>
+          <p class="section-kicker">SHARED SPACE</p>
+          <h2>你们的共同小屋</h2>
+        </div>
+        <button class="text-button" id="decorateButton">去布置 <span>↗</span></button>
+      </section>
+
+      <section class="room-card card-shadow home-only" id="roomCard">
+        <div class="room-label"><span class="status-dot"></span> 客厅 · 晴</div>
+        <div class="room-art">
+          <div class="wall-shelf"><span>♡</span><span>✦</span><span>⌂</span></div>
+          <div class="picture-frame"><span>♡</span><small>forever</small></div>
+          <div class="plant plant-left"><i></i><i></i><i></i><b></b></div>
+          <div class="sofa"><span class="pillow pillow-pink"></span><span class="pillow pillow-blue"></span></div>
+          <div class="rug"></div>
+          <div class="coffee-table"><span></span></div>
+          <div class="pet pet-cat" id="pet" aria-label="你们的宠物小团子">●</div>
+          <div class="pet-bubble" id="petBubble">今天也要一起玩！</div>
+          <div class="floor-line"></div>
+        </div>
+        <div class="room-footer">
+          <div>
+            <strong>小团子</strong>
+            <span>你们的共同宠物 · 心情很好</span>
+          </div>
+          <button class="round-button" id="feedButton" aria-label="喂小团子">♡</button>
+        </div>
+      </section>
+
+      <section class="stats-grid home-only">
+        <article class="mini-card days-card">
+          <div class="mini-icon">⌁</div>
+          <div><span>相爱</span><strong>128 <small>天</small></strong></div>
+          <div class="sparkline"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+        </article>
+        <article class="mini-card checkin-card">
+          <div class="mini-icon">✦</div>
+          <div><span>今日心情</span><strong id="moodText">甜甜的</strong></div>
+          <button class="mood-button" id="moodButton" aria-label="更换今日心情">☺</button>
+        </article>
+      </section>
+
+      <section class="section-heading tasks-heading home-only">
+        <div>
+          <p class="section-kicker">TODAY TOGETHER</p>
+          <h2>今天一起做什么？</h2>
+        </div>
+        <span class="task-count" id="taskCount">1 / 3</span>
+      </section>
+
+      <section class="task-list home-only">
+        <button class="task-item task-done" data-task="true">
+          <span class="check-circle">✓</span><span>给小团子喂饭</span><small>已完成</small>
+        </button>
+        <button class="task-item" data-task="true">
+          <span class="check-circle"></span><span>交换今天的一句话</span><small>去完成</small>
+        </button>
+        <button class="task-item" data-task="true">
+          <span class="check-circle"></span><span>一起看一部电影</span><small>去完成</small>
+        </button>
+      </section>
+
+      <section class="page-view" data-page="timeline" hidden>
+        <div class="page-title"><p class="section-kicker">YOUR STORY</p><h2>你们的时光</h2><p>把平凡日子，慢慢收藏成回忆。</p></div>
+        <div class="record-composer"><span class="composer-avatar">你</span><button id="quickRecord">记录今天的小事… <b>＋</b></button></div>
+        <div class="timeline" id="timeline"></div>
+      </section>
+
+      <section class="page-view" data-page="wishes" hidden>
+        <div class="page-title"><p class="section-kicker">WISH TOGETHER</p><h2>你们的心愿</h2><p>一起期待，一起完成。</p></div>
+        <div class="wish-input"><input id="wishInput" maxlength="32" placeholder="写下一个想和 TA 做的事" /><button id="addWish">添加</button></div>
+        <div class="wish-list" id="wishList"></div>
+      </section>
+
+      <section class="page-view" data-page="couple" hidden>
+        <div class="page-title"><p class="section-kicker">JUST US</p><h2>关于我们</h2><p>你们的专属空间，由两个人一起守护。</p></div>
+        <div class="couple-profile" id="coupleProfile"></div>
+        <div class="settings-list"><button id="openBindFromPage"><span>♧</span><b>情侣绑定</b><small>管理你们的连接</small><i>›</i></button><button id="resetDemo"><span>↺</span><b>重置演示数据</b><small>重新开始一段小日子</small><i>›</i></button></div>
+      </section>
+
+      <nav class="bottom-nav" aria-label="主导航">
+        <button class="nav-item active" data-page-target="home"><span>⌂</span><small>小屋</small></button>
+        <button class="nav-item" data-page-target="timeline"><span>♡</span><small>时光</small></button>
+        <button class="nav-add" id="addButton" aria-label="添加共同记录">+</button>
+        <button class="nav-item" data-page-target="wishes"><span>✦</span><small>心愿</small></button>
+        <button class="nav-item" data-page-target="couple"><span>☻</span><small>我们</small></button>
+      </nav>
+    </main>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+    <div class="modal-backdrop" id="decorateModal" aria-hidden="true">
+      <section class="decorate-modal" role="dialog" aria-modal="true" aria-labelledby="decorateTitle">
+        <button class="modal-close" id="closeDecorate" aria-label="关闭布置面板">×</button>
+        <p class="section-kicker">MAKE IT YOURS</p>
+        <h2 id="decorateTitle">把小屋布置成你们喜欢的样子</h2>
+        <p class="modal-description">选一个氛围，马上预览。主题会保存在这台设备上。</p>
+        <div class="theme-options">
+          <button class="theme-option theme-option-pink active" data-theme="pink"><span class="theme-preview"><i></i><b></b><em></em></span><strong>奶油小屋</strong><small>温柔 · 日常</small></button>
+          <button class="theme-option theme-option-blue" data-theme="blue"><span class="theme-preview"><i></i><b></b><em></em></span><strong>海边夏天</strong><small>清爽 · 浪漫</small></button>
+          <button class="theme-option theme-option-green" data-theme="green"><span class="theme-preview"><i></i><b></b><em></em></span><strong>森林晚安</strong><small>安静 · 陪伴</small></button>
+        </div>
+        <button class="save-decorate" id="saveDecorate">保存这个布置</button>
+      </section>
+    </div>
+
+    <div class="modal-backdrop" id="bindModal" aria-hidden="true">
+      <section class="bind-modal" role="dialog" aria-modal="true" aria-labelledby="bindTitle">
+        <button class="modal-close" id="closeBind" aria-label="关闭绑定面板">×</button>
+        <div class="bind-illustration">♡</div>
+        <p class="section-kicker">TWO OF US</p>
+        <h2 id="bindTitle">和 TA 连接在一起</h2>
+        <p class="modal-description">绑定后，你们的心情、任务、装修和记录都会保持同步。</p>
+        <div class="binding-status" id="bindingStatus"></div>
+        <div class="bind-code-box"><span>你的邀请码</span><strong id="inviteCode">LUV-6281</strong><button id="copyCode">复制</button></div>
+        <label class="code-label" for="partnerCode">输入 TA 的邀请码</label>
+        <div class="partner-code-row"><input id="partnerCode" maxlength="8" placeholder="例如 LUV-6281" /><button id="bindPartner">立即绑定</button></div>
+        <p class="bind-note">演示版会在本地模拟绑定；接入云端后可跨设备使用。</p>
+      </section>
+    </div>
+    <script src="./app.js"></script>
+  </body>
+</html>

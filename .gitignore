@@ -1,0 +1,4 @@
+data/rooms.json
+*.log
+node_modules/
+.env
