@@ -21,7 +21,7 @@ async function petChat(request, env) {
     content: String(item.text || '').slice(0, 600)
   })).filter(item => item.content) : [];
   try {
-    const result = await env.AI.run('@cf/meta/llama-3.1-8b-instruct', {
+    const result = await env.AI.run('@cf/meta/llama-3.1-8b-instruct-fast', {
       messages: [{ role: 'system', content: petSystemPrompt }, ...history, { role: 'user', content: message }],
       max_tokens: 280,
       temperature: 0.7
