@@ -62,14 +62,14 @@
           <div class="sofa"><span class="pillow pillow-pink"></span><span class="pillow pillow-blue"></span></div>
           <div class="rug"></div>
           <div class="coffee-table"><span></span></div>
-          <div class="pet pet-cat" id="pet" aria-label="你们的宠物小团子">●</div>
+          <div class="pet pet-cat" id="pet" aria-label="你们的宠物小团子"><span class="pet-face">●</span><span class="pet-outfit" id="petOutfit">♡</span></div>
           <div class="pet-bubble" id="petBubble">今天也要一起玩！</div>
           <div class="floor-line"></div>
         </div>
         <div class="room-footer">
           <div>
             <strong>小团子</strong>
-            <span>你们的共同宠物 · 心情很好</span>
+            <span>你们的共同宠物 · <b id="petOutfitLabel">原本的软乎乎</b></span>
           </div>
           <button class="round-button" id="feedButton" aria-label="喂小团子">♡</button>
         </div>
@@ -86,6 +86,32 @@
           <div><span>今日心情</span><strong id="moodText">甜甜的</strong></div>
           <button class="mood-button" id="moodButton" aria-label="更换今日心情">☺</button>
         </article>
+      </section>
+
+      <section class="pet-lab-card home-only">
+        <div class="pet-lab-top">
+          <div>
+            <p class="section-kicker">AI COMPANION</p>
+            <h2>小团子的成长日记</h2>
+            <p>完成情侣任务，陪它升级，解锁专属穿搭。</p>
+          </div>
+          <div class="pet-level-badge"><span id="petLevel">Lv.1</span><small id="petCoins">♡ 18</small></div>
+        </div>
+        <div class="pet-progress"><span id="petXpBar"></span></div>
+        <div class="pet-lab-actions">
+          <button class="soft-button" id="petChatButton">和它聊聊</button>
+          <button class="soft-button" id="outfitButton">换一套衣服</button>
+          <button class="primary-button" id="openGamesButton">去玩小游戏 <span>↗</span></button>
+        </div>
+        <div class="pet-chat" id="petChat" hidden>
+          <div class="pet-chat-bubble" id="petChatText">我会陪你们把每一个小任务都变成回忆。</div>
+          <div class="pet-chat-choices">
+            <button data-pet-chat="今天谁更想 TA？">今天谁更想 TA？</button>
+            <button data-pet-chat="给我们一句鼓励">给我们一句鼓励</button>
+            <button data-pet-chat="夸夸我的新衣服">夸夸我的新衣服</button>
+          </div>
+        </div>
+        <div class="outfit-list" id="outfitList" hidden></div>
       </section>
 
       <section class="section-heading tasks-heading home-only">
@@ -118,6 +144,32 @@
         <div class="page-title"><p class="section-kicker">WISH TOGETHER</p><h2>你们的心愿</h2><p>一起期待，一起完成。</p></div>
         <div class="wish-input"><input id="wishInput" maxlength="32" placeholder="写下一个想和 TA 做的事" /><button id="addWish">添加</button></div>
         <div class="wish-list" id="wishList"></div>
+      </section>
+
+      <section class="page-view games-page" data-page="games" hidden>
+        <div class="page-title"><p class="section-kicker">PLAY TOGETHER</p><h2>情侣小游戏</h2><p>一局小小的游戏，也能让两个人靠近一点。</p></div>
+        <div class="game-tabs"><button class="game-tab active">你画我猜</button><span>胜场 <b id="gameWins">0</b></span></div>
+        <article class="drawing-game">
+          <div class="game-card-head"><div><span class="game-emoji">✎</span><strong>你画我猜</strong></div><span class="game-status" id="drawStatus">还没有开始</span></div>
+          <p class="game-tip" id="drawPrompt">点击开始，随机抽一个只有画画的人能看到的词。</p>
+          <div class="draw-board-wrap">
+            <canvas id="drawCanvas" width="640" height="360" aria-label="你画我猜画板"></canvas>
+            <img id="drawImage" alt="TA 的画作" hidden />
+          </div>
+          <div class="draw-actions">
+            <button class="primary-button" id="startGame">开始一局</button>
+            <button class="soft-button" id="clearCanvas">清空画板</button>
+            <button class="soft-button" id="submitDrawing">提交画作</button>
+          </div>
+          <div class="guess-row" id="guessRow" hidden><input id="guessInput" maxlength="20" placeholder="猜猜 TA 画的是什么" /><button class="primary-button" id="submitGuess">提交答案</button></div>
+          <p class="game-result" id="drawResult"></p>
+        </article>
+        <article class="question-game">
+          <div><span class="game-emoji">♡</span><strong>每日默契问答</strong></div>
+          <p id="questionText">今天更想和 TA 一起去哪里？</p>
+          <div class="question-options"><button data-answer="海边">去海边吹风</button><button data-answer="家里">窝在家里看电影</button><button data-answer="城市">去城市里散步</button></div>
+          <small id="questionResult">选择一个答案，看看你们的默契。</small>
+        </article>
       </section>
 
       <section class="page-view" data-page="couple" hidden>
@@ -163,7 +215,7 @@
         <div class="bind-code-box"><span>你的邀请码</span><strong id="inviteCode">LUV-6281</strong><button id="copyCode">复制</button></div>
         <label class="code-label" for="partnerCode">输入 TA 的邀请码</label>
         <div class="partner-code-row"><input id="partnerCode" maxlength="8" placeholder="例如 LUV-6281" /><button id="bindPartner">立即绑定</button></div>
-        <p class="bind-note">演示版会在本地模拟绑定；接入云端后可跨设备使用。</p>
+        <p class="bind-note">云端版本支持跨设备同步，把邀请码发给 TA 即可加入。</p>
       </section>
     </div>
     <script src="./app.js"></script>
