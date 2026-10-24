@@ -9,12 +9,37 @@ const defaultState = () => ({
 function json(value, status = 200) { return new Response(JSON.stringify(value), { status, headers: { 'content-type': 'application/json; charset=utf-8', 'cache-control': 'no-store' } }); }
 function roomStub(env, code) { return env.ROOMS.get(env.ROOMS.idFromName(code)); }
 function newCode() { return `LUV-${Math.floor(1000 + Math.random() * 9000)}`; }
+const petSystemPrompt = `你是情侣共同小屋里的 AI 宠物“小团子”。你温柔、活泼、会记得对方正在经营小屋和完成任务。请用自然的中文回答普通问题，可以聊天、解释知识、给建议、陪伴和创作。回答要简洁但有帮助，通常不超过 180 个字。不要假装自己是人类，不要索取密码、验证码、银行卡、住址等隐私。遇到伤害自己或他人、违法、危险操作、色情剥削、恶意入侵、医疗或法律高风险问题时，简短说明不能协助，并给出安全、合法的替代建议；不要提供可执行的危险步骤。`;
+
+async function petChat(request, env) {
+  const payload = await request.json().catch(() => ({}));
+  const message = String(payload.message || '').trim().slice(0, 600);
+  if (!message) return json({ error: 'message is required' }, 400);
+  if (!env.AI?.run) return json({ error: 'ai binding is not enabled' }, 503);
+  const history = Array.isArray(payload.history) ? payload.history.slice(-10).map(item => ({
+    role: item.role === 'pet' ? 'assistant' : 'user',
+    content: String(item.text || '').slice(0, 600)
+  })).filter(item => item.content) : [];
+  try {
+    const result = await env.AI.run('@cf/meta/llama-3.1-8b-instruct', {
+      messages: [{ role: 'system', content: petSystemPrompt }, ...history, { role: 'user', content: message }],
+      max_tokens: 280,
+      temperature: 0.7
+    });
+    const reply = String(result?.response || result?.output_text || result?.text || '').trim();
+    if (!reply) return json({ error: 'empty ai response' }, 502);
+    return json({ reply: reply.slice(0, 800), provider: 'cloudflare-workers-ai' });
+  } catch (error) {
+    return json({ error: 'ai request failed', detail: String(error?.message || 'unknown') }, 502);
+  }
+}
 
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
     if (!url.pathname.startsWith('/api/')) return env.ASSETS.fetch(request);
     if (request.method === 'GET' && url.pathname === '/api/health') return json({ ok: true, provider: 'cloudflare-workers' });
+    if (request.method === 'POST' && url.pathname === '/api/pet-chat') return petChat(request, env);
     if (request.method === 'POST' && url.pathname === '/api/room/create') {
       const room = newCode();
       const state = defaultState(); state.inviteCode = room;

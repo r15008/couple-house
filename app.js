@@ -181,12 +181,23 @@ function applyFurnitureReward() {
   return newlyUnlocked;
 }
 
-function answerPet(message) {
+async function answerPet(message) {
   const normalized = message.trim();
   if (!normalized) return;
-  const match = petAiReplies.find(item => item.keys.some(key => normalized.includes(key)));
-  const response = match?.reply || `我听见你说“${normalized}”啦。要不要和 TA 一起完成一个小任务，再回来告诉我结果？`;
-  state.pet.chat.push({ role: 'you', text: normalized }, { role: 'pet', text: response });
+  state.pet.chat.push({ role: 'you', text: normalized });
+  state.pet.lastChat = '让我想一想…';
+  renderPet();
+  let response;
+  try {
+    const result = await fetch('/api/pet-chat', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ room: ROOM_ID, message: normalized, history: state.pet.chat.slice(-11) }) });
+    const data = await result.json();
+    if (!result.ok || !data.reply) throw new Error(data.error || 'AI unavailable');
+    response = data.reply;
+  } catch {
+    const match = petAiReplies.find(item => item.keys.some(key => normalized.includes(key)));
+    response = match?.reply || `我听见你说“${normalized}”啦。云端 AI 暂时休息中，但我会继续陪着你们。要不要先完成一个小任务？`;
+  }
+  state.pet.chat.push({ role: 'pet', text: response });
   state.pet.lastChat = response;
   saveState('小团子回复你啦');
 }
